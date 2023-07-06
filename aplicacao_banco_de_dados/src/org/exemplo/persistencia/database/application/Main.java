@@ -73,7 +73,7 @@ public class Main {
         System.out.println("Deseja criar uma conta poupanca (S/N)?");
         String opcaoCriarContaPoupanca = scanner.nextLine();
         
-        if(opcaoCriarContaPoupanca.equalsIgnoreCase("N")) {
+        if(opcaoCriarContaPoupanca.equalsIgnoreCase("S")) {
         	System.out.println("Numero da conta poupanca");
         	String numeroContaPoupanca = scanner.nextLine();
         	System.out.println("Saldo inicial: ");
