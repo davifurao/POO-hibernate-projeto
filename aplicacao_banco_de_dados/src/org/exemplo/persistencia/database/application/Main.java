@@ -23,7 +23,7 @@ public class Main {
         IEntityDAO<ContaPoupanca> contaPoupancaDAO = new ContaPoupancaDAO(new ConexaoBancoHibernate());
 
         
-        Cliente cliente = null; // Declarar a variï¿½vel cliente antes do bloco if-else
+        Cliente cliente = null; // Declarar a variável cliente antes do bloco if-else
 
         
         // Criar um cliente
@@ -48,7 +48,7 @@ public class Main {
              cliente = clienteDAO.findByCPF(cpfExistente);
 
             if (cliente == null) {
-                System.out.println("Cliente nï¿½o encontrado. Saindo do programa.");
+                System.out.println("Cliente não encontrado. Saindo do programa.");
                 scanner.close();
                 return;
             }
@@ -58,7 +58,7 @@ public class Main {
         String opcaoCriarContaCorrente = scanner.nextLine();
 
         if (opcaoCriarContaCorrente.equalsIgnoreCase("S")) {
-            System.out.print("Nï¿½mero da conta corrente: ");
+            System.out.print("Número da conta corrente: ");
             String numeroContaCorrente = scanner.nextLine();
             System.out.print("Saldo inicial: ");
             float saldoCorrente = scanner.nextFloat();
@@ -91,7 +91,7 @@ public class Main {
 
 
 
-        // Realizar operaï¿½ï¿½es bancï¿½rias
+        // Realizar operações bancárias
         OperacoesBancarias operacoesBancarias = new OperacoesBancarias();
 
         int opcao;
@@ -102,7 +102,7 @@ public class Main {
 
             switch (opcao) {
                 case 1:
-                    System.out.print("Nï¿½mero da conta corrente: ");
+                    System.out.print("Número da conta corrente: ");
                     String numeroContaCorrenteSaque = scanner.nextLine();
                     System.out.print("Valor do saque: ");
                     float valorSaque = scanner.nextFloat();
@@ -111,7 +111,7 @@ public class Main {
                     operacoesBancarias.saqueContaCorrente(numeroContaCorrenteSaque, valorSaque);
                     break;
                 case 2:
-                    System.out.print("Nï¿½mero da conta poupanï¿½a: ");
+                    System.out.print("Número da conta poupança: ");
                     String numeroContaPoupancaSaque = scanner.nextLine();
                     System.out.print("Valor do saque: ");
                     float valorPoupancaSaque = scanner.nextFloat();
@@ -120,20 +120,20 @@ public class Main {
                     operacoesBancarias.saqueContaPoupanca(numeroContaPoupancaSaque, valorPoupancaSaque);
                     break;
                 case 3:
-                    System.out.print("Nï¿½mero da conta de origem: ");
+                    System.out.print("Número da conta de origem: ");
                     String numeroContaOrigem = scanner.nextLine();
-                    System.out.print("Nï¿½mero da conta de destino: ");
+                    System.out.print("Número da conta de destino: ");
                     String numeroContaDestino = scanner.nextLine();
-                    System.out.print("Valor da transferï¿½ncia: ");
+                    System.out.print("Valor da transferência: ");
                     float valorTransferencia = scanner.nextFloat();
                     scanner.nextLine(); // Limpar o buffer do scanner
 
                     operacoesBancarias.transferencia(numeroContaOrigem, numeroContaDestino, valorTransferencia);
                     break;
                 case 4:
-                    System.out.print("Nï¿½mero da conta: ");
+                    System.out.print("Número da conta: ");
                     String numeroContaDeposito = scanner.nextLine();
-                    System.out.print("Valor do depï¿½sito: ");
+                    System.out.print("Valor do depósito: ");
                     float valorDeposito = scanner.nextFloat();
                     scanner.nextLine(); // Limpar o buffer do scanner
 
@@ -141,13 +141,13 @@ public class Main {
                     break;
                 case 5:
                     float balanco = operacoesBancarias.balanco();
-                    System.out.println("Balanï¿½o total: " + balanco);
+                    System.out.println("Balanço total: " + balanco);
                     break;
                 case 0:
                     System.out.println("Saindo do programa.");
                     break;
                 default:
-                    System.out.println("Opï¿½ï¿½o invï¿½lida.");
+                    System.out.println("Opção inválida.");
                     break;
             }
         } while (opcao != 0);
@@ -158,11 +158,11 @@ public class Main {
     private static void exibirMenu() {
         System.out.println("----- Menu -----");
         System.out.println("1. Saque (Conta Corrente)");
-        System.out.println("2. Saque (Conta Poupanï¿½a)");
-        System.out.println("3. Transferï¿½ncia");
-        System.out.println("4. Depï¿½sito");
-        System.out.println("5. Balanï¿½o");
+        System.out.println("2. Saque (Conta Poupança)");
+        System.out.println("3. Transferência");
+        System.out.println("4. Depósito");
+        System.out.println("5. Balanço");
         System.out.println("0. Sair");
-        System.out.print("Escolha uma opï¿½ï¿½o: ");
+        System.out.print("Escolha uma opção: ");
     }
 }

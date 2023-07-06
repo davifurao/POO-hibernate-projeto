@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import org.exemplo.persistencia.database.model.Cliente;
 import org.exemplo.persistencia.database.model.ContaCorrente;
 import org.exemplo.persistencia.database.model.ContaPoupanca;
+import org.exemplo.persistencia.database.model.RegistroTransacao;
 import org.exemplo.persistencia.database.util.ConfigLoader;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
@@ -60,6 +61,7 @@ public class ConexaoBancoHibernate implements IConnection{
                 configuration.addAnnotatedClass(ContaCorrente.class);
                 configuration.addAnnotatedClass(ContaPoupanca.class);
                 configuration.addAnnotatedClass(Cliente.class);
+                configuration.addAnnotatedClass(RegistroTransacao.class);
                 //configuration.addAnnotatedClass(Exame.class);
 
                 // Create StandardServiceRegistryBuilder

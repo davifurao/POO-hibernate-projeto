@@ -5,9 +5,11 @@ import java.util.List;
 import org.exemplo.persistencia.database.dao.ContaCorrenteDAO;
 import org.exemplo.persistencia.database.dao.ContaPoupancaDAO;
 import org.exemplo.persistencia.database.dao.IEntityDAO;
+import org.exemplo.persistencia.database.dao.RegistroTransacaoDAO;
 import org.exemplo.persistencia.database.db.ConexaoBancoHibernate;
 import org.exemplo.persistencia.database.model.ContaCorrente;
 import org.exemplo.persistencia.database.model.ContaPoupanca;
+import org.exemplo.persistencia.database.model.RegistroTransacao;
 
 ;
 
@@ -15,13 +17,21 @@ public class OperacoesBancarias {
 
     private IEntityDAO<ContaCorrente> contaCorrenteDAO;
     private IEntityDAO<ContaPoupanca> contaPoupancaDAO;
+    private RegistroTransacaoDAO registroTransacaoDAO;
 
     public OperacoesBancarias() {
         contaCorrenteDAO = new ContaCorrenteDAO(new ConexaoBancoHibernate());
         contaPoupancaDAO = new ContaPoupancaDAO(new ConexaoBancoHibernate());
+        registroTransacaoDAO = new RegistroTransacaoDAO(new ConexaoBancoHibernate());
     }
 
     public void saqueContaCorrente(String numero_conta, float valor) {
+    	String tipo_conta;
+    	String tipo_transacao;
+    	
+    	tipo_conta = "Conta Corrente";
+    	tipo_transacao = "Saque";
+    	
         ContaCorrente contaCorrente = contaCorrenteDAO.findByNumeroConta(numero_conta);
         if (contaCorrente != null) {
             float saldoAtual = contaCorrente.getSaldo();
@@ -30,6 +40,7 @@ public class OperacoesBancarias {
                 contaCorrente.setSaldo(saldoFinal);
                 contaCorrenteDAO.update(contaCorrente);
                 System.out.println("Saque realizado com sucesso.");
+                registroTransacaoDAO.save(new RegistroTransacao(contaCorrente.getNumero_conta(),valor,tipo_conta,tipo_transacao));
             } else {
                 System.out.println("Saldo insuficiente.");
             }
@@ -39,6 +50,13 @@ public class OperacoesBancarias {
     }
 
     public void saqueContaPoupanca(String numero_conta, float valor) {
+    	String tipo_conta;
+    	String tipo_transacao;
+    	
+    	tipo_conta = "Conta Poupanca";
+    	tipo_transacao = "Saque";
+    	
+    	
         ContaPoupanca contaPoupanca = contaPoupancaDAO.findByNumeroConta(numero_conta);
         if (contaPoupanca != null) {
             float saldoAtual = contaPoupanca.getSaldo();
@@ -47,6 +65,7 @@ public class OperacoesBancarias {
                 contaPoupanca.setSaldo(saldoFinal);
                 contaPoupancaDAO.update(contaPoupanca);
                 System.out.println("Saque realizado com sucesso.");
+                registroTransacaoDAO.save(new RegistroTransacao(contaPoupanca.getNumero_conta(),valor,tipo_conta,tipo_transacao));
             } else {
                 System.out.println("Saldo insuficiente.");
             }
@@ -56,6 +75,12 @@ public class OperacoesBancarias {
     }
 
     public void transferencia(String origem, String destino, float valor) {
+    	String tipo_conta;
+    	String tipo_transacao;
+    	
+    
+    	
+    	
         ContaCorrente origemCorrente = contaCorrenteDAO.findByNumeroConta(origem);
         ContaCorrente destinoCorrente = contaCorrenteDAO.findByNumeroConta(destino);
         ContaPoupanca origemPoupanca = contaPoupancaDAO.findByNumeroConta(origem);
@@ -68,6 +93,8 @@ public class OperacoesBancarias {
                 destinoCorrente.setSaldo(destinoCorrente.getSaldo() + valor);
                 contaCorrenteDAO.update(origemCorrente);
                 contaCorrenteDAO.update(destinoCorrente);
+                registroTransacaoDAO.save(new RegistroTransacao(origemCorrente.getNumero_conta(),valor,"Conta Corrente","Transferencia Credito"));
+                registroTransacaoDAO.save(new RegistroTransacao(destinoCorrente.getNumero_conta(),valor,"Conta Corrente","Transferencia Credito"));
                 System.out.println("Transferência realizada com sucesso.");
             } else {
                 System.out.println("Saldo insuficiente na conta de origem.");
@@ -79,6 +106,8 @@ public class OperacoesBancarias {
                 destinoPoupanca.setSaldo(destinoPoupanca.getSaldo() + valor);
                 contaPoupancaDAO.update(origemPoupanca);
                 contaPoupancaDAO.update(destinoPoupanca);
+                registroTransacaoDAO.save(new RegistroTransacao(destinoPoupanca.getNumero_conta(),valor,"Conta Poupanca","Transferencia Credito"));
+                registroTransacaoDAO.save(new RegistroTransacao(origemPoupanca.getNumero_conta(),valor,"Conta Poupanca","Transferencia Debito"));
                 System.out.println("Transferência realizada com sucesso.");
             } else {
                 System.out.println("Saldo insuficiente na conta de origem.");
@@ -90,6 +119,8 @@ public class OperacoesBancarias {
                 destinoPoupanca.setSaldo(destinoPoupanca.getSaldo() + valor);
                 contaCorrenteDAO.update(origemCorrente);
                 contaPoupancaDAO.update(destinoPoupanca);
+                registroTransacaoDAO.save(new RegistroTransacao(origemCorrente.getNumero_conta(),valor,"Conta Corrente","Transferencia Debito"));
+                registroTransacaoDAO.save(new RegistroTransacao(destinoPoupanca.getNumero_conta(),valor,"Conta Poupanca","Transferencia Credito"));
                 System.out.println("Transferência realizada com sucesso.");
             } else {
                 System.out.println("Saldo insuficiente na conta de origem.");
@@ -101,6 +132,8 @@ public class OperacoesBancarias {
                 destinoCorrente.setSaldo(destinoCorrente.getSaldo() + valor);
                 contaPoupancaDAO.update(origemPoupanca);
                 contaCorrenteDAO.update(destinoCorrente);
+                registroTransacaoDAO.save(new RegistroTransacao(origemPoupanca.getNumero_conta(),valor,"Conta Poupanca","Transferencia Debito"));
+                registroTransacaoDAO.save(new RegistroTransacao(destinoCorrente.getNumero_conta(),valor,"Conta Corrente","Transferencia Credito"));
                 System.out.println("Transferência realizada com sucesso.");
             } else {
                 System.out.println("Saldo insuficiente na conta de origem.");
@@ -111,16 +144,28 @@ public class OperacoesBancarias {
     }
 
     public void deposito(String numero_conta, float valor) {
+    	
+    	String tipo_conta;
+    	String tipo_transacao;
+    	
+    	
+    	tipo_transacao = "deposito";
+    	
+    	
         ContaCorrente contaCorrente = contaCorrenteDAO.findByNumeroConta(numero_conta);
         ContaPoupanca contaPoupanca = contaPoupancaDAO.findByNumeroConta(numero_conta);
 
         if (contaCorrente != null) {
+        	tipo_conta = "Conta Corrente";
             contaCorrente.setSaldo(contaCorrente.getSaldo() + valor);
             contaCorrenteDAO.update(contaCorrente);
+            registroTransacaoDAO.save(new RegistroTransacao(contaCorrente.getNumero_conta(),valor,tipo_conta,tipo_transacao));
             System.out.println("Depósito realizado com sucesso.");
         } else if (contaPoupanca != null) {
+        	tipo_conta = "Conta Poupanca";
             contaPoupanca.setSaldo(contaPoupanca.getSaldo() + valor);
             contaPoupancaDAO.update(contaPoupanca);
+            registroTransacaoDAO.save(new RegistroTransacao(contaPoupanca.getNumero_conta(),valor,tipo_conta,tipo_transacao));
             System.out.println("Depósito realizado com sucesso.");
         } else {
             System.out.println("A conta com o número especificado não existe.");
